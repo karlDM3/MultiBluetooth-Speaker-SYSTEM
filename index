@@ -1,0 +1,204 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<title>MultiBluetooth - Connect Multiple Speakers</title>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-lg-12">
+        <div class="card bg-dark-subtle">
+            <div class="card-body">
+                <h2 class="card-title mb-3">
+                    <i class="fas fa-bluetooth me-2"></i>MultiBluetooth Speaker System
+                </h2>
+                <p class="card-text lead">
+                    Connect your device to up to 8 Bluetooth speakers simultaneously and enjoy synchronized audio playback.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Speaker Management Panel -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-volume-up me-2"></i>Speaker Management
+                </h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Connected Speakers <span class="badge bg-primary" id="speaker-count">0</span></h5>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover" id="speaker-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="speaker-list">
+                            {% if speakers %}
+                                {% for speaker in speakers %}
+                                <tr data-speaker-id="{{ speaker.id }}" data-speaker-address="{{ speaker.address }}">
+                                    <td>{{ speaker.name }}</td>
+                                    <td>{{ speaker.address }}</td>
+                                    <td>
+                                        {% if speaker.connected %}
+                                        <span class="badge bg-success">Connected</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Disconnected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if speaker.connected %}
+                                        <button class="btn btn-sm btn-danger disconnect-btn" data-speaker-id="{{ speaker.id }}">
+                                            <i class="fas fa-unlink me-1"></i> Disconnect
+                                        </button>
+                                        {% else %}
+                                        <button class="btn btn-sm btn-success reconnect-btn" data-speaker-address="{{ speaker.address }}" data-speaker-name="{{ speaker.name }}">
+                                            <i class="fas fa-link me-1"></i> Reconnect
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr id="no-speakers-row">
+                                    <td colspan="4" class="text-center text-muted">No speakers connected. Use the scan button to find speakers.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                    <button class="btn btn-primary" id="scan-button">
+                        <i class="fas fa-search me-1"></i> Scan for Speakers
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Audio Control Panel -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-music me-2"></i>Audio Controls
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col text-center">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-success btn-lg" id="play-button" disabled>
+                                <i class="fas fa-play me-1"></i> Play
+                            </button>
+                            <button class="btn btn-warning btn-lg" id="pause-button" disabled>
+                                <i class="fas fa-pause me-1"></i> Pause
+                            </button>
+                            <button class="btn btn-danger btn-lg" id="stop-button" disabled>
+                                <i class="fas fa-stop me-1"></i> Stop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" id="playback-status">
+                            <i class="fas fa-info-circle me-1"></i> Ready to play. Connect speakers to begin.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Available Devices Panel -->
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Available Devices
+                </h4>
+            </div>
+            <div class="card-body">
+                <div id="scanning-indicator" class="d-none">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border text-primary me-2" role="status">
+                            <span class="visually-hidden">Scanning...</span>
+                        </div>
+                        <span>Scanning for devices...</span>
+                    </div>
+                    <div class="progress mt-2">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" id="scan-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div id="device-list-container">
+                    <ul class="list-group" id="device-list">
+                        <li class="list-group-item text-center text-muted">
+                            No devices found. Click "Scan for Speakers" to search.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Status Panel -->
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-cogs me-2"></i>System Status
+                </h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group" id="status-list">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Connected Speakers
+                        <span class="badge bg-primary rounded-pill" id="status-speaker-count">0</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Playback Status
+                        <span class="badge bg-secondary rounded-pill" id="status-playback">Stopped</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        System Health
+                        <span class="badge bg-success rounded-pill" id="status-health">Good</span>
+                    </li>
+                </ul>
+                
+                <div class="d-grid mt-3">
+                    <button class="btn btn-outline-primary" id="refresh-status-button">
+                        <i class="fas fa-sync-alt me-1"></i> Refresh Status
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Connection Results -->
+<div class="modal fade" id="connection-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="connection-modal-title">Connection Result</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="connection-modal-body">
+                Connection status will appear here.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
