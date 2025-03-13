@@ -35,7 +35,7 @@ The MultiBluetooth Speaker System uses a Flask-based web application with WebSoc
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/multibluetooth-speaker-system.git
+git clone https://github.com/karldm3/multibluetooth-speaker-system.git
 cd multibluetooth-speaker-system
 
 # Install Python dependencies
