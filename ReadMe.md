@@ -106,7 +106,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [PyBluez](https://github.com/pybluez/pybluez) for Bluetooth functionality
 - [Flask](https://flask.palletsprojects.com/) for the web framework
 - [Socket.IO](https://socket.io/) for real-time communication
-
+- [Thato_Popotwane](https://www.facebook.com/share/18nf8vSm2e/?mibextid=wwXIfr) for proposing the idea/mind behind the idea
 ---
 
 *Note: This project is in development stage. For optimal performance, ensure all speakers support the same Bluetooth profiles and codecs.*
