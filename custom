@@ -1,0 +1,75 @@
+/* MultiBluetooth Speaker System - Custom CSS */
+
+/* Card hover effects */
+.card {
+    transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Speaker table styling */
+#speaker-table tbody tr {
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Animation for connection status changes */
+.badge {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Audio controls styling */
+.btn-group .btn {
+    padding: 0.75rem 1.5rem;
+}
+
+/* Custom progress bar for scan */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+}
+
+/* Device list styling */
+#device-list .list-group-item {
+    transition: background-color 0.2s ease-in-out;
+}
+
+#device-list .list-group-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* System status panel */
+#status-list .list-group-item {
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Custom alerts */
+.alert {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom animations */
+.fa-bluetooth-b {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn-group .btn {
+        padding: 0.5rem 1rem;
+    }
+}
